@@ -1,14 +1,12 @@
-import useGetUser from './useGetUser';
-
 export const initialState = {
   isLoading: false,
-  user: undefined,
-  type: undefined,
-  types: undefined,
-  files: undefined,
+  user: {},
+  type: {},
+  types: [],
+  files: [],
   query: '',
   error: '',
-  context: {},
+  context: null,
 };
 export function reducerReportes(state, action) {
   switch (action.type) {
@@ -17,20 +15,19 @@ export function reducerReportes(state, action) {
         ...state,
         isLoading: true,
         loadingMsg: 'Cargando usuario',
-        context: action.value,
       };
     case 'userSuccess': {
       return {
         ...state,
         isLoading: false,
-        user: action.value,
+        user: action.payload,
       };
     }
     case 'userError':
       return {
         ...state,
         isLoading: false,
-        error: action.value.message,
+        error: action.payload.message,
       };
     case 'typesLoading': {
       return {
@@ -43,10 +40,10 @@ export function reducerReportes(state, action) {
       return {
         ...state,
         isLoading: false,
-        types: action.value,
+        types: action.payload,
       };
     }
-    case 'typesErrors': {
+    case 'typesError': {
       return {
         ...state,
         isLoading: false,
@@ -56,13 +53,13 @@ export function reducerReportes(state, action) {
     case 'setType': {
       return {
         ...state,
-        type: action.value,
+        type: action.payload,
       };
     }
     case 'setQuery': {
       return {
         ...state,
-        query: action.value,
+        query: action.payload,
       };
     }
     case 'filesLoading': {
@@ -76,7 +73,7 @@ export function reducerReportes(state, action) {
       return {
         ...state,
         isLoading: false,
-        files: action.value,
+        files: action.payload,
       };
     }
     case 'filesError': {

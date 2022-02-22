@@ -15,8 +15,10 @@ import {
 import { AnimationClassNames } from 'office-ui-fabric-react';
 
 import { reducerReportes, initialState } from '../services/reducerReportes';
-import useGetuser from '../services/useGetUser';
-import useGetUser from '../services/useGetUser';
+import getUser from '../services/getUser';
+import useGetTypes from '../services/useGetTypes';
+import getTypes from '../services/getTypes';
+
 export interface IWebcomReportesProps {
   description: string;
   isDarkTheme: boolean;
@@ -41,62 +43,28 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
     query,
     files,
   } = state;
-
-  // let newUser = useGetUser(props.context).user;
-  // let newTypes = useGetTypes(props.context).types;
-  // let newFiles = useGetFiles(props.context, type, query).files;
-  // console.log({ types });
-  function getUser(context) {
-    let user = useGetUser(context).user;
-    console.log({ user });
-    return user;
-  }
-  //usuario
+  //! effect
   useEffect(() => {
-    async function fetchData() {
-      dispatch({ type: 'userLoading', value: props.context });
+    const fetchData = async () => {
+      dispatch({ type: 'userLoading' });
       try {
-        dispatch({
-          type: 'userSuccess',
-          value: getUser(props.context),
-        });
+        const user = await getUser(props.context);
+        dispatch({ type: 'userSuccess', payload: user });
       } catch (err) {
-        dispatch({ type: 'userError', value: err });
+        dispatch({ type: 'userError', payload: err });
         console.log(err);
       }
-    }
+      dispatch({ type: 'typesLoading', payload: types });
+      try {
+        const types = await getTypes(props.context);
+        dispatch({ type: 'typesSuccess', payload: types });
+      } catch (err) {
+        dispatch({ type: 'typesError', payload: err });
+        console.log(err);
+      }
+    };
     fetchData();
   }, []);
-  //types
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     dispatch({ type: 'typesLoading' });
-  //     try {
-  //       dispatch({ type: 'typesSuccess', value: newTypes });
-  //     } catch (err) {
-  //       dispatch({ type: 'typesErrors', value: err });
-  //       console.log(err);
-  //     }
-  //   }
-  //   if (user != undefined && newTypes != undefined) {
-  //     fetchData();
-  //   }
-  //   console.log({ types });
-  // }, [user]);
-  // files
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     dispatch({ type: 'filesLoading' });
-  //     try {
-  //       dispatch({ type: 'filesSuccess', });
-  //     } catch (err) {
-  //       dispatch({ type: 'filesError' });
-  //     }
-  //   }
-  //   if (query != '' || type == undefined) {
-  //     fetchData();
-  //   }
-  // }, [type, query]);
 
   let commandBarItems: ICommandBarItemProps[] = [
     {
@@ -120,7 +88,7 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
       key: 'type',
       text: 'Tipo de reporte',
       onRender: () =>
-        types != undefined && (
+        types.length != 0 && (
           <ComboBox
             placeholder='Reporte'
             defaultSelectedKey={types[0].key}

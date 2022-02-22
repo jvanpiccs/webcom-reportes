@@ -4,16 +4,17 @@ import {
   ComboBox,
   CommandBar,
   Depths,
+  IComboBoxOption,
   ICommandBarItemProps,
-  MotionAnimations,
   ProgressIndicator,
   SearchBox,
   Stack,
   Text,
 } from '@fluentui/react';
 import useGetUser from '../services/useGetUser';
-import useGetFiles from '../services/useGetFiles';
+import useGetTypes from '../services/useGetTypes';
 import { AnimationClassNames } from 'office-ui-fabric-react';
+import useGetFiles from '../services/useGetFiles';
 
 export interface IWebcomReportesProps {
   description: string;
@@ -32,55 +33,54 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
   const { user } = useGetUser(props.context, setLoading);
 
   //filter
-  const [type, setType] = useState({});
+  const [type, setType] = useState<IComboBoxOption>({
+    key: '/sites/webcom/Reportes',
+    text: 'Todos',
+    data: '/sites/webcom/Reportes',
+  });
   const [query, setQuery] = useState('');
   //files
-  const { files, folders } = useGetFiles(
-    type,
-    query,
-    props.context,
-    setLoading
-  );
+  const { types } = useGetTypes(props.context, setLoading);
+  const { files } = useGetFiles(props.context, setLoading, type, query);
 
   let commandBarItems: ICommandBarItemProps[] = [
     {
       key: 'search',
-      onRender: () => <SearchBox />,
-    },
-  ];
-
-  let commandBarFarItems: ICommandBarItemProps[] = [
-    {
-      key: 'type',
-      text: 'Tipo de reporte',
-      // iconProps: { iconName: 'ReportDocument' },
-      // subMenuProps: {
-      //   items: folders.map((f) => {
-      //     let obj = { key: f.Name, text: f.Name };
-      //     return obj;
-      //   }),
-      // },
       onRender: () => (
-        <ComboBox
-          placeholder='Reporte'
-          defaultSelectedKey={folders[0].Name}
-          options={folders.map((f) => {
-            let obj = { key: f.Name, text: f.Name };
-            return obj;
-          })}
-          onChange={(ev, option) => {
-            setType(option);
+        <SearchBox
+          placeholder='Buscar'
+          onChange={(ev, newValue) => {
+            ev.preventDefault();
+            if (newValue != ('' || undefined)) {
+              setQuery(newValue);
+            } else {
+              setQuery('');
+            }
           }}
         />
       ),
     },
   ];
+  let commandBarFarItems: ICommandBarItemProps[] = [
+    {
+      key: 'type',
+      text: 'Tipo de reporte',
+      onRender: () => (
+        <ComboBox
+          placeholder='Reporte'
+          // defaultSelectedKey={types[0].key}
+          options={types}
+          onChange={(ev, option) => {
+            setType(option);
+          }}
+          autoComplete='on'
+          allowFreeform={true}
+        />
+      ),
+    },
+  ];
 
-  useEffect(() => {
-    // setLoading(null);
-    // console.log({ user });
-    // console.log({ loading });
-  }, [user, loading, files]);
+  useEffect(() => {}, [user, loading, types, query]);
 
   return (
     <>
@@ -93,21 +93,16 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
         </Text>
         {/* Barra de carga y error */}
         <ProgressIndicator
-          className={
-            loading?.percentComplete == 1
-              ? AnimationClassNames.fadeOut100
-              : AnimationClassNames.fadeIn100
-          }
           label={loading?.label}
           description={loading?.description}
           percentComplete={loading?.percentComplete}
         />
+        <br />
         {/* Filtros */}
         <CommandBar items={commandBarItems} farItems={commandBarFarItems} />
-
         {/* Resultados */}
         <ul>
-          {files.map((i) => (
+          {files?.map((i) => (
             <li>{i.Name}</li>
           ))}
         </ul>

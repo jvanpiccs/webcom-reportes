@@ -5,17 +5,12 @@ import '@pnp/sp/lists';
 import '@pnp/sp/items';
 import '@pnp/sp/site-users/web';
 
-export default function useGetuser(context, setLoading) {
+export default function useGetuser(context) {
   const sp = spfi().using(SPFx(context));
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(undefined);
 
   useEffect(() => {
     async function fetchData() {
-      setLoading({
-        label: 'Usuario',
-        description: 'Cargando',
-        percentComplete: 0,
-      });
       try {
         let listId = '2a529d15-8e90-4e08-a9ee-c4360dc6ad45';
         let currentUser = await sp.web.currentUser();
@@ -41,24 +36,13 @@ export default function useGetuser(context, setLoading) {
           userProfile[0]['Entidades'] = entidades;
         }
         setUser(userProfile[0]);
-        setLoading({
-          label: 'Usuario',
-          description: 'Cargado',
-          percentComplete: 1,
-        });
       } catch (err) {
-        setLoading({
-          label: 'Error en la carga de usuario',
-          description: err,
-          percentComplete: 1,
-        });
+        console.log(err);
       }
     }
 
     fetchData();
   }, [context]);
 
-  return {
-    user,
-  };
+  return { user };
 }

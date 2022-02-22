@@ -6,19 +6,14 @@ import '@pnp/sp/folders';
 import '@pnp/sp/lists';
 import '@pnp/sp/files';
 
-export default function useGetTypes(context, setLoading) {
+export default function useGetTypes(context) {
   const sp = spfi().using(SPFx(context));
-  const [types, setTypes] = useState([]);
+  const [types, setTypes] = useState(undefined);
   const listId = '13c99e77-c804-4d36-8012-de6094bf0d5e';
 
   useEffect(() => {
     async function fetchData() {
       try {
-        setLoading({
-          label: 'Reportes',
-          description: 'Cargando reportes',
-          percentComplete: 0.1,
-        });
         const allFolders = await sp.web.lists
           .getById(listId)
           .rootFolder.folders.orderBy('Name')
@@ -41,11 +36,6 @@ export default function useGetTypes(context, setLoading) {
           }
         });
         setTypes(allTypes);
-        setLoading({
-          label: 'Reportes',
-          description: 'Reportes cargados',
-          percentComplete: 1,
-        });
       } catch (err) {
         console.log(err);
       }
@@ -55,7 +45,5 @@ export default function useGetTypes(context, setLoading) {
     }
   }, []);
 
-  return {
-    types,
-  };
+  return { types };
 }

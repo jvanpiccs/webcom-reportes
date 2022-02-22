@@ -3,10 +3,11 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
+import { spfi, SPFx } from '@pnp/sp';
 
 import * as strings from 'WebcomReportesWebPartStrings';
 import WebcomReportes from './components/WebcomReportes';
@@ -17,37 +18,40 @@ export interface IWebcomReportesWebPartProps {
 }
 
 export default class WebcomReportesWebPart extends BaseClientSideWebPart<IWebcomReportesWebPartProps> {
-
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
 
-  protected onInit(): Promise<void> {
+  protected async onInit(): Promise<void> {
     this._environmentMessage = this._getEnvironmentMessage();
-
+    await super.onInit();
+    const sp = spfi().using(SPFx(this.context));
     return super.onInit();
   }
 
   public render(): void {
-    const element: React.ReactElement<IWebcomReportesProps> = React.createElement(
-      WebcomReportes,
-      {
+    const element: React.ReactElement<IWebcomReportesProps> =
+      React.createElement(WebcomReportes, {
         description: this.properties.description,
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
-      }
-    );
+        userDisplayName: this.context.pageContext.user.displayName,
+      });
 
     ReactDom.render(element, this.domElement);
   }
 
   private _getEnvironmentMessage(): string {
-    if (!!this.context.sdks.microsoftTeams) { // running in Teams
-      return this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentTeams : strings.AppTeamsTabEnvironment;
+    if (!!this.context.sdks.microsoftTeams) {
+      // running in Teams
+      return this.context.isServedFromLocalhost
+        ? strings.AppLocalEnvironmentTeams
+        : strings.AppTeamsTabEnvironment;
     }
 
-    return this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentSharePoint : strings.AppSharePointEnvironment;
+    return this.context.isServedFromLocalhost
+      ? strings.AppLocalEnvironmentSharePoint
+      : strings.AppSharePointEnvironment;
   }
 
   protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
@@ -56,13 +60,13 @@ export default class WebcomReportesWebPart extends BaseClientSideWebPart<IWebcom
     }
 
     this._isDarkTheme = !!currentTheme.isInverted;
-    const {
-      semanticColors
-    } = currentTheme;
+    const { semanticColors } = currentTheme;
     this.domElement.style.setProperty('--bodyText', semanticColors.bodyText);
     this.domElement.style.setProperty('--link', semanticColors.link);
-    this.domElement.style.setProperty('--linkHovered', semanticColors.linkHovered);
-
+    this.domElement.style.setProperty(
+      '--linkHovered',
+      semanticColors.linkHovered
+    );
   }
 
   protected onDispose(): void {
@@ -78,20 +82,20 @@ export default class WebcomReportesWebPart extends BaseClientSideWebPart<IWebcom
       pages: [
         {
           header: {
-            description: strings.PropertyPaneDescription
+            description: strings.PropertyPaneDescription,
           },
           groups: [
             {
               groupName: strings.BasicGroupName,
               groupFields: [
                 PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
-                })
-              ]
-            }
-          ]
-        }
-      ]
+                  label: strings.DescriptionFieldLabel,
+                }),
+              ],
+            },
+          ],
+        },
+      ],
     };
   }
 }

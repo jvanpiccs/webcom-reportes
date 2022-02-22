@@ -25,7 +25,6 @@ export default function useGetuser(context, setLoading) {
         let userProfile = await sp.web.lists
           .getById(listId)
           .items.filter(`UsuarioId eq ${currentUser.Id}`)();
-        console.log(userProfile);
         if (userProfile.length == 0) {
           throw `El usuario '${currentUser.Email}' no se encuentra habilitado para la descarga de reportes.`;
         }

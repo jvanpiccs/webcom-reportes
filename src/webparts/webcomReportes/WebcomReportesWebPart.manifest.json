@@ -21,7 +21,7 @@
       "group": { "default": "Other" },
       "title": { "default": "Webcom Reportes" },
       "description": { "default": "Webcom Reportes description" },
-      "officeFabricIconFontName": "PowerBi",
+      "officeFabricIconFontName": "PowerBILogo16",
       "properties": {
         "description": "Webcom Reportes"
       }

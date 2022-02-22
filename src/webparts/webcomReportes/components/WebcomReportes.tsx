@@ -1,43 +1,117 @@
 import * as React from 'react';
-import styles from './WebcomReportes.module.scss';
-import { IWebcomReportesProps } from './IWebcomReportesProps';
-import { escape } from '@microsoft/sp-lodash-subset';
+import { useEffect, useState } from 'react';
+import {
+  ComboBox,
+  CommandBar,
+  Depths,
+  ICommandBarItemProps,
+  MotionAnimations,
+  ProgressIndicator,
+  SearchBox,
+  Stack,
+  Text,
+} from '@fluentui/react';
+import useGetUser from '../services/useGetUser';
+import useGetFiles from '../services/useGetFiles';
+import { AnimationClassNames } from 'office-ui-fabric-react';
 
-export default class WebcomReportes extends React.Component<IWebcomReportesProps, {}> {
-  public render(): React.ReactElement<IWebcomReportesProps> {
-    const {
-      description,
-      isDarkTheme,
-      environmentMessage,
-      hasTeamsContext,
-      userDisplayName
-    } = this.props;
-
-    return (
-      <section className={`${styles.webcomReportes} ${hasTeamsContext ? styles.teams : ''}`}>
-        <div className={styles.welcome}>
-          <img alt="" src={isDarkTheme ? require('../assets/welcome-dark.png') : require('../assets/welcome-light.png')} className={styles.welcomeImage} />
-          <h2>Well done, {escape(userDisplayName)}!</h2>
-          <div>{environmentMessage}</div>
-          <div>Web part property value: <strong>{escape(description)}</strong></div>
-        </div>
-        <div>
-          <h3>Welcome to SharePoint Framework!</h3>
-          <p>
-            The SharePoint Framework (SPFx) is a extensibility model for Microsoft Viva, Microsoft Teams and SharePoint. It's the easiest way to extend Microsoft 365 with automatic Single Sign On, automatic hosting and industry standard tooling.
-          </p>
-          <h4>Learn more about SPFx development:</h4>
-          <ul className={styles.links}>
-            <li><a href="https://aka.ms/spfx" target="_blank">SharePoint Framework Overview</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-graph" target="_blank">Use Microsoft Graph in your solution</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-teams" target="_blank">Build for Microsoft Teams using SharePoint Framework</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-viva" target="_blank">Build for Microsoft Viva Connections using SharePoint Framework</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-store" target="_blank">Publish SharePoint Framework applications to the marketplace</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-api" target="_blank">SharePoint Framework API reference</a></li>
-            <li><a href="https://aka.ms/m365pnp" target="_blank">Microsoft 365 Developer Community</a></li>
-          </ul>
-        </div>
-      </section>
-    );
-  }
+export interface IWebcomReportesProps {
+  description: string;
+  isDarkTheme: boolean;
+  environmentMessage: string;
+  hasTeamsContext: boolean;
+  userDisplayName: string;
+  context: any;
 }
+
+export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
+  props: React.PropsWithChildren<IWebcomReportesProps>
+) => {
+  const [loading, setLoading] = useState(null);
+  //user
+  const { user } = useGetUser(props.context, setLoading);
+
+  //filter
+  const [type, setType] = useState({});
+  const [query, setQuery] = useState('');
+  //files
+  const { files, folders } = useGetFiles(
+    type,
+    query,
+    props.context,
+    setLoading
+  );
+
+  let commandBarItems: ICommandBarItemProps[] = [
+    {
+      key: 'search',
+      onRender: () => <SearchBox />,
+    },
+  ];
+
+  let commandBarFarItems: ICommandBarItemProps[] = [
+    {
+      key: 'type',
+      text: 'Tipo de reporte',
+      // iconProps: { iconName: 'ReportDocument' },
+      // subMenuProps: {
+      //   items: folders.map((f) => {
+      //     let obj = { key: f.Name, text: f.Name };
+      //     return obj;
+      //   }),
+      // },
+      onRender: () => (
+        <ComboBox
+          placeholder='Reporte'
+          defaultSelectedKey={folders[0].Name}
+          options={folders.map((f) => {
+            let obj = { key: f.Name, text: f.Name };
+            return obj;
+          })}
+          onChange={(ev, option) => {
+            setType(option);
+          }}
+        />
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    // setLoading(null);
+    // console.log({ user });
+    // console.log({ loading });
+  }, [user, loading, files]);
+
+  return (
+    <>
+      <Stack
+        style={{ padding: 10, boxShadow: Depths.depth16 }}
+        className={AnimationClassNames.fadeIn100}
+      >
+        <Text variant='large' className={AnimationClassNames.fadeIn200}>
+          Reportes
+        </Text>
+        {/* Barra de carga y error */}
+        <ProgressIndicator
+          className={
+            loading?.percentComplete == 1
+              ? AnimationClassNames.fadeOut100
+              : AnimationClassNames.fadeIn100
+          }
+          label={loading?.label}
+          description={loading?.description}
+          percentComplete={loading?.percentComplete}
+        />
+        {/* Filtros */}
+        <CommandBar items={commandBarItems} farItems={commandBarFarItems} />
+
+        {/* Resultados */}
+        <ul>
+          {files.map((i) => (
+            <li>{i.Name}</li>
+          ))}
+        </ul>
+      </Stack>
+    </>
+  );
+};

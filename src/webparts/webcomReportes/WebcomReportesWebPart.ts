@@ -10,8 +10,10 @@ import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import { spfi, SPFx } from '@pnp/sp';
 
 import * as strings from 'WebcomReportesWebPartStrings';
-import WebcomReportes from './components/WebcomReportes';
-import { IWebcomReportesProps } from './components/IWebcomReportesProps';
+import {
+  WebcomReportes,
+  IWebcomReportesProps,
+} from './components/WebcomReportes';
 
 export interface IWebcomReportesWebPartProps {
   description: string;
@@ -22,9 +24,9 @@ export default class WebcomReportesWebPart extends BaseClientSideWebPart<IWebcom
   private _environmentMessage: string = '';
 
   protected async onInit(): Promise<void> {
-    this._environmentMessage = this._getEnvironmentMessage();
     await super.onInit();
     const sp = spfi().using(SPFx(this.context));
+    this._environmentMessage = this._getEnvironmentMessage();
     return super.onInit();
   }
 
@@ -36,6 +38,7 @@ export default class WebcomReportesWebPart extends BaseClientSideWebPart<IWebcom
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
+        context: this.context,
       });
 
     ReactDom.render(element, this.domElement);

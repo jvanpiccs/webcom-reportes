@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "webcom-reportes-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/webcomReportes/WebcomReportesWebPart.js",
+          "manifest": "./src/webparts/webcomReportes/WebcomReportesWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "WebcomReportesWebPartStrings": "lib/webparts/webcomReportes/loc/{locale}.js"
+  }
+}

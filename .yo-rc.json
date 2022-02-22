@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "webcom-reportes-2",
+    "libraryId": "4274072c-be8d-4623-9183-7d1872410cd4",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "webcom-reportes-2",
+    "solutionShortDescription": "webcom-reportes-2 description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

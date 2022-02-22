@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "webcom-reportes-2-client-side-solution",
+    "id": "4274072c-be8d-4623-9183-7d1872410cd4",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.14.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "webcom-reportes-2 description"
+      },
+      "longDescription": {
+        "default": "webcom-reportes-2 description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "webcom-reportes-2 Feature",
+        "description": "The feature that activates elements of the webcom-reportes-2 solution.",
+        "id": "f34071af-f691-4402-830f-f6ab4a8d334d",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/webcom-reportes-2.sppkg"
+  }
+}

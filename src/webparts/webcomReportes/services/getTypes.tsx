@@ -14,12 +14,14 @@ export default async function useGetTypes(context) {
       .getById(listId)
       .rootFolder.folders.orderBy('Name')
       .filter(`Name ne 'ADMIN' and Name ne 'Forms' and Name ne 'Test'`)();
+    console.log(allFolders);
     let allTypes = [];
     allFolders.map(async (folder) => {
       let newFiles = await sp.web
         .getFolderByServerRelativePath(folder.ServerRelativeUrl)
         .files();
       if (newFiles.length != 0) {
+        console.log();
         let url = newFiles[0].ServerRelativeUrl.split('/')
           .slice(0, -1)
           .join('/');

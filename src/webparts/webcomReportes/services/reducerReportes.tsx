@@ -1,12 +1,13 @@
 export const initialState = {
   isLoading: false,
-  user: {},
-  type: {},
-  types: [],
+  user: undefined,
+  type: undefined,
+  types: undefined,
   files: [],
+  filesLoading: false,
   query: '',
   error: '',
-  context: null,
+  context: {},
 };
 export function reducerReportes(state, action) {
   switch (action.type) {
@@ -15,6 +16,7 @@ export function reducerReportes(state, action) {
         ...state,
         isLoading: true,
         loadingMsg: 'Cargando usuario',
+        context: action.payload,
       };
     case 'userSuccess': {
       return {
@@ -41,6 +43,7 @@ export function reducerReportes(state, action) {
         ...state,
         isLoading: false,
         types: action.payload,
+        type: action.payload[0],
       };
     }
     case 'typesError': {
@@ -65,22 +68,21 @@ export function reducerReportes(state, action) {
     case 'filesLoading': {
       return {
         ...state,
-        isLoading: true,
-        loadingMsg: 'Cargando reportes',
+        filesLoading: true,
       };
     }
     case 'filesSuccess': {
       return {
         ...state,
-        isLoading: false,
         files: action.payload,
+        filesLoading: false,
       };
     }
     case 'filesError': {
       return {
         ...state,
-        isLoading: false,
         error: 'Error al cargar los reportes',
+        filesLoading: false,
       };
     }
 

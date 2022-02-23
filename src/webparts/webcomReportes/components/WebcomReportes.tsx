@@ -9,6 +9,7 @@ import {
   MessageBarType,
   ProgressIndicator,
   SearchBox,
+  Separator,
   Stack,
   Text,
 } from '@fluentui/react';
@@ -16,8 +17,9 @@ import { AnimationClassNames } from 'office-ui-fabric-react';
 
 import { reducerReportes, initialState } from '../services/reducerReportes';
 import getUser from '../services/getUser';
-import useGetTypes from '../services/useGetTypes';
 import getTypes from '../services/getTypes';
+import getFiles from '../services/getFiles';
+import { Reportes } from './Reportes';
 
 export interface IWebcomReportesProps {
   description: string;
@@ -42,60 +44,84 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
     types,
     query,
     files,
+    filesLoading,
   } = state;
-  //! effect
+
   useEffect(() => {
-    const fetchData = async () => {
-      dispatch({ type: 'userLoading' });
+    async function fetchLoading() {
+      //!loading user and adding context
+      dispatch({ type: 'userLoading', payload: props.context });
       try {
-        const user = await getUser(props.context);
+        let user = await getUser(props.context);
         dispatch({ type: 'userSuccess', payload: user });
       } catch (err) {
         dispatch({ type: 'userError', payload: err });
         console.log(err);
       }
+
+      //!loading types
       dispatch({ type: 'typesLoading', payload: types });
       try {
         const types = await getTypes(props.context);
         dispatch({ type: 'typesSuccess', payload: types });
+        console.log({ types });
       } catch (err) {
         dispatch({ type: 'typesError', payload: err });
         console.log(err);
       }
-    };
-    fetchData();
+    }
+
+    fetchLoading();
   }, []);
+
+  useEffect(() => {
+    //!getFiles
+    async function fetchData() {
+      dispatch({ type: 'filesLoading' });
+
+      try {
+        let files = await getFiles(context, type, query);
+        dispatch({ type: 'filesSuccess', payload: files });
+        console.log(files);
+      } catch (err) {
+        dispatch({ type: 'filesError' });
+      }
+    }
+    if (type != undefined) {
+      fetchData();
+    }
+  }, [query, type]);
 
   let commandBarItems: ICommandBarItemProps[] = [
     {
       key: 'search',
-      onRender: () =>
-        files != [] && (
-          <SearchBox
-            placeholder='Buscar'
-            onChange={(ev, newValue) => {
+      onRender: () => (
+        <SearchBox
+          placeholder='Buscar'
+          onChange={(ev, newValue) => {
+            if (newValue.trim() != '' || newValue != undefined) {
               dispatch({
                 type: 'setQuery',
-                value: newValue?.toLowerCase()?.trim(),
+                payload: newValue.trim().toLowerCase(),
               });
-            }}
-          />
-        ),
+            }
+          }}
+        />
+      ),
     },
   ];
+
   let commandBarFarItems: ICommandBarItemProps[] = [
     {
       key: 'type',
       text: 'Tipo de reporte',
       onRender: () =>
-        types.length != 0 && (
+        types != undefined && (
           <ComboBox
             placeholder='Reporte'
-            defaultSelectedKey={types[0].key}
             options={types}
             onChange={(ev, option) => {
-              dispatch({ type: 'setType', value: option });
-              console.log({ type });
+              dispatch({ type: 'setType', payload: option });
             }}
             autoComplete='on'
             allowFreeform={true}
@@ -103,16 +129,18 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
         ),
     },
   ];
+
   return (
     <>
       <Stack
-        style={{ padding: 10, boxShadow: Depths.depth16 }}
+        style={{ padding: 20, boxShadow: Depths.depth16 }}
         className={AnimationClassNames.fadeIn100}
         tokens={{ childrenGap: 10 }}
       >
         <Text variant='large' className={AnimationClassNames.fadeIn200}>
           Reportes
         </Text>
+        <br />
         {error != '' && (
           <MessageBar
             messageBarType={MessageBarType.error}
@@ -121,21 +149,23 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
             Error: {error}
           </MessageBar>
         )}
-        <ProgressIndicator
-          className={
-            isLoading
-              ? AnimationClassNames.fadeIn100
-              : AnimationClassNames.fadeOut100
-          }
-          description={loadingMsg}
-        />
-        <br />
-        <CommandBar items={commandBarItems} farItems={commandBarFarItems} />
-        <ul>
-          {files?.map((i) => (
-            <li>{i.Name}</li>
-          ))}
-        </ul>
+        {isLoading && (
+          <ProgressIndicator
+            className={AnimationClassNames.fadeIn100}
+            barHeight={1}
+            description={loadingMsg}
+          />
+        )}
+        {!isLoading && (
+          <>
+            <CommandBar
+              items={commandBarItems}
+              farItems={commandBarFarItems}
+              className={AnimationClassNames.fadeIn100}
+            />
+            <Reportes files={files} loading={filesLoading} />
+          </>
+        )}
       </Stack>
     </>
   );

@@ -5,7 +5,7 @@ import '@pnp/sp/folders';
 import '@pnp/sp/lists';
 import '@pnp/sp/files';
 
-export default async function useGetTypes(context) {
+export default async function getTypes(context) {
   const sp = spfi().using(SPFx(context));
   const listId = '13c99e77-c804-4d36-8012-de6094bf0d5e';
 
@@ -14,8 +14,7 @@ export default async function useGetTypes(context) {
       .getById(listId)
       .rootFolder.folders.orderBy('Name')
       .filter(`Name ne 'ADMIN' and Name ne 'Forms' and Name ne 'Test'`)();
-    console.log(allFolders);
-    let allTypes = [];
+    let types = [];
     allFolders.map(async (folder) => {
       let newFiles = await sp.web
         .getFolderByServerRelativePath(folder.ServerRelativeUrl)
@@ -26,14 +25,14 @@ export default async function useGetTypes(context) {
           .slice(0, -1)
           .join('/');
         let name = newFiles[0].ServerRelativeUrl.split('/').slice(-2)[0];
-        allTypes.push({
+        types.push({
           key: name,
           text: name,
           data: url,
         });
       }
     });
-    return allTypes;
+    return types;
   } catch (err) {
     console.log(err);
   }

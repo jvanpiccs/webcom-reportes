@@ -3,6 +3,7 @@ export const initialState = {
   user: undefined,
   type: undefined,
   types: undefined,
+  allFiles: [],
   files: [],
   filesLoading: false,
   query: '',
@@ -46,17 +47,11 @@ export function reducerReportes(state, action) {
         type: action.payload[0],
       };
     }
-    case 'typesError': {
-      return {
-        ...state,
-        isLoading: false,
-        error: 'Error al cargar las categorías',
-      };
-    }
     case 'setType': {
       return {
         ...state,
         type: action.payload,
+        query: '',
       };
     }
     case 'setQuery': {
@@ -71,7 +66,7 @@ export function reducerReportes(state, action) {
         filesLoading: true,
       };
     }
-    case 'filesSuccess': {
+    case 'setFiles': {
       return {
         ...state,
         files: action.payload,
@@ -81,8 +76,8 @@ export function reducerReportes(state, action) {
     case 'filesError': {
       return {
         ...state,
-        error: 'Error al cargar los reportes',
         filesLoading: false,
+        error: 'No se encontraro reportes',
       };
     }
 

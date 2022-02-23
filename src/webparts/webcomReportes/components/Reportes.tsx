@@ -12,13 +12,13 @@ import * as React from 'react';
 
 export interface IReportesProps {
   files: IFileInfo[];
-  loading: boolean;
+  isLoading: boolean;
 }
 
 export const Reportes: React.FunctionComponent<IReportesProps> = (
   props: React.PropsWithChildren<IReportesProps>
 ) => {
-  console.log(props.files);
+  let { files, isLoading } = props;
   function downloadReporte(id) {
     console.log(id);
   }
@@ -42,9 +42,10 @@ export const Reportes: React.FunctionComponent<IReportesProps> = (
         columns={reportesColumns}
         selectionMode={SelectionMode.none}
         compact
-        enableShimmer={props.loading}
+        enableShimmer={isLoading}
         isHeaderVisible={false}
         layoutMode={DetailsListLayoutMode.justified}
+        shimmerLines={6}
       />
     </>
   );

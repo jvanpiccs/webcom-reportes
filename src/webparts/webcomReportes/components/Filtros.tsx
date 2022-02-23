@@ -33,6 +33,7 @@ export const Filtros: React.FunctionComponent<IFiltrosProps> = (
             }}
             autoComplete='on'
             allowFreeform={true}
+            className={AnimationClassNames.fadeIn100}
           />
         ),
     },
@@ -42,6 +43,7 @@ export const Filtros: React.FunctionComponent<IFiltrosProps> = (
         <>
           <div style={{ minWidth: 10 }}></div>
           <SearchBox
+            className={AnimationClassNames.fadeIn100}
             disabled={!hasResults}
             placeholder='Buscar'
             onChange={(ev, newValue) => {

@@ -27,8 +27,9 @@ export default async function useGetuser(context) {
         entidades.push(entidad);
       });
       userProfile[0]['Entidades'] = entidades;
+      console.log(entidades);
     }
-    return userProfile[0];
+    return { ...userProfile[0], Email: currentUser.Email };
   } catch (err) {
     console.log(err);
   }

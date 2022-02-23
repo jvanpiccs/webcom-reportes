@@ -4,6 +4,8 @@ import {
   Depths,
   MessageBar,
   MessageBarType,
+  Persona,
+  PersonaSize,
   ProgressIndicator,
   Stack,
   Text,
@@ -90,10 +92,21 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
         className={AnimationClassNames.fadeIn100}
         tokens={{ childrenGap: 10 }}
       >
-        <Text variant='large' className={AnimationClassNames.fadeIn200}>
-          Reportes
-        </Text>
-        <br />
+        <Stack horizontal horizontalAlign='space-between'>
+          <Text variant='large' className={AnimationClassNames.fadeIn200}>
+            Reportes
+          </Text>
+          {user != null && (
+            <Persona
+              text={user.Email}
+              secondaryText={`Entidades: ${user.Entidades.map(
+                (e) => e.Entidad
+              )}`}
+              size={PersonaSize.size40}
+              className={AnimationClassNames.fadeIn100}
+            />
+          )}
+        </Stack>
         {error != '' && (
           <MessageBar
             messageBarType={MessageBarType.error}

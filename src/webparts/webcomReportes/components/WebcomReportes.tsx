@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState, useEffect, useReducer } from 'react';
 import {
   Depths,
+  Link,
   MessageBar,
   MessageBarType,
   Persona,
@@ -9,6 +10,7 @@ import {
   ProgressIndicator,
   Stack,
   Text,
+  TooltipHost,
 } from '@fluentui/react';
 import { AnimationClassNames, fontFace } from 'office-ui-fabric-react';
 
@@ -46,9 +48,9 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
     filesLoading,
   } = state;
 
+  //!usuario y categorias
   useEffect(() => {
     async function fetchLoading() {
-      //!loading user and adding context
       dispatch({ type: 'userLoading', payload: props.context });
       try {
         let user = await getUser(props.context);
@@ -69,6 +71,7 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
     fetchLoading();
   }, []);
 
+  //! busqueda y filtrado
   useEffect(() => {
     async function fetchData() {
       dispatch({ type: 'filesLoading' });
@@ -92,16 +95,22 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
         className={AnimationClassNames.fadeIn100}
         tokens={{ childrenGap: 10 }}
       >
-        <Stack horizontal horizontalAlign='space-between'>
+        <Stack
+          horizontal
+          horizontalAlign='space-between'
+          wrap
+          verticalAlign='center'
+        >
           <Text variant='large' className={AnimationClassNames.fadeIn200}>
             Reportes
           </Text>
-          {user != null && (
+          {!isLoading && user != undefined && (
             <Persona
+              aria-describedby='tooltipPersona'
               text={user.Email}
-              secondaryText={`Entidades: ${user.Entidades.map(
+              secondaryText={`Entidades: ${user.Entidades?.map(
                 (e) => e.Entidad
-              )}`}
+              ).join(', ')}`}
               size={PersonaSize.size40}
               className={AnimationClassNames.fadeIn100}
             />

@@ -6,9 +6,13 @@ import {
   Text,
   Icon,
   Link,
+  Spinner,
+  SpinnerSize,
+  Stack,
 } from '@fluentui/react';
 import { IFileInfo } from '@pnp/sp/files';
 import * as React from 'react';
+import getExcel from '../services/getExcel';
 
 export interface IReportesProps {
   files: IFileInfo[];
@@ -19,26 +23,19 @@ export const Reportes: React.FunctionComponent<IReportesProps> = (
   props: React.PropsWithChildren<IReportesProps>
 ) => {
   let { files, isLoading } = props;
-  function downloadReporte(id) {
-    console.log(id);
-  }
   let reportesColumns: IColumn[] = [
     {
       key: 'title',
       name: 'Reporte',
       minWidth: 100,
       fieldName: 'Name',
-      onRender: (item) => (
-        <Link onClick={() => downloadReporte(item.UniqueId)}>
-          <Icon iconName='ExcelDocument' /> <Text>{item.Name}</Text>
-        </Link>
-      ),
+      onRender: (i) => <Reporte file={i} />,
     },
   ];
   return (
     <>
       <ShimmeredDetailsList
-        items={props.files}
+        items={files}
         columns={reportesColumns}
         selectionMode={SelectionMode.none}
         compact
@@ -48,5 +45,37 @@ export const Reportes: React.FunctionComponent<IReportesProps> = (
         shimmerLines={6}
       />
     </>
+  );
+};
+
+export interface IReporteProps {
+  file: any;
+}
+
+export const Reporte: React.FunctionComponent<IReporteProps> = (
+  props: React.PropsWithChildren<IReporteProps>
+) => {
+  let [isDownloading, setIsDownloading] = React.useState(false);
+  async function downloadReporte(file) {
+    setIsDownloading(true);
+    let downloadFile = await getExcel(file);
+    setIsDownloading(false);
+    return downloadFile;
+  }
+  return (
+    <Stack horizontal horizontalAlign='space-between'>
+      <Link onClick={() => downloadReporte(props.file)} title='Descargar'>
+        <Icon iconName='ExcelDocument' />
+        <Text>{props.file.Name}</Text>
+      </Link>
+
+      {isDownloading && (
+        <Spinner
+          label='Descargando...'
+          size={SpinnerSize.small}
+          labelPosition='right'
+        />
+      )}
+    </Stack>
   );
 };

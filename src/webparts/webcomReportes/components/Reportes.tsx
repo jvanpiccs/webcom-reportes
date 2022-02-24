@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
   DetailsListLayoutMode,
   IColumn,
@@ -11,25 +12,27 @@ import {
   Stack,
 } from '@fluentui/react';
 import { IFileInfo } from '@pnp/sp/files';
-import * as React from 'react';
-import getExcel from '../services/getExcel';
 
 export interface IReportesProps {
   files: IFileInfo[];
   isLoading: boolean;
+  entidades;
+  context;
 }
 
 export const Reportes: React.FunctionComponent<IReportesProps> = (
   props: React.PropsWithChildren<IReportesProps>
 ) => {
-  let { files, isLoading } = props;
+  let { files, isLoading, entidades, context } = props;
   let reportesColumns: IColumn[] = [
     {
       key: 'title',
       name: 'Reporte',
       minWidth: 100,
       fieldName: 'Name',
-      onRender: (i) => <Reporte file={i} />,
+      onRender: (file) => (
+        <Reporte file={file} entidades={entidades} context={context} />
+      ),
     },
   ];
   return (
@@ -47,24 +50,28 @@ export const Reportes: React.FunctionComponent<IReportesProps> = (
     </>
   );
 };
-
+//!link de descarga
+import { getExcel } from '../services/getExcel';
 export interface IReporteProps {
   file: any;
+  entidades;
+  context;
 }
 
 export const Reporte: React.FunctionComponent<IReporteProps> = (
   props: React.PropsWithChildren<IReporteProps>
 ) => {
+  let { file, entidades, context } = props;
   let [isDownloading, setIsDownloading] = React.useState(false);
   async function downloadReporte(file) {
     setIsDownloading(true);
-    let downloadFile = await getExcel(file);
+    let downloadFile = await getExcel(file, entidades, context);
     setIsDownloading(false);
     return downloadFile;
   }
   return (
     <Stack horizontal horizontalAlign='space-between'>
-      <Link onClick={() => downloadReporte(props.file)} title='Descargar'>
+      <Link onClick={() => downloadReporte(file)} title='Descargar'>
         <Icon iconName='ExcelDocument' />
         <Text>{props.file.Name}</Text>
       </Link>

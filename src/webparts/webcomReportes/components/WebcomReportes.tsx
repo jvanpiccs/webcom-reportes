@@ -131,14 +131,19 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
             description={loadingMsg}
           />
         )}
-        {!isLoading && allFiles != [] && (
+        {!isLoading && user != null && allFiles != [] && (
           <>
             <Filtros
               dispatch={dispatch}
               types={types}
               hasResults={files.length != 0}
             />
-            <Reportes files={files} isLoading={filesLoading} />
+            <Reportes
+              files={files}
+              isLoading={filesLoading}
+              context={context}
+              entidades={user.Entidades}
+            />
           </>
         )}
       </Stack>

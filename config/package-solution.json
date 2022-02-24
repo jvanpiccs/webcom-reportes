@@ -1,25 +1,25 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "webcom-reportes-2-client-side-solution",
+    "name": "webcom-reportes",
     "id": "4274072c-be8d-4623-9183-7d1872410cd4",
-    "version": "1.0.0.0",
+    "version": "1.0.0.5",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
     "developer": {
-      "name": "",
-      "websiteUrl": "",
-      "privacyUrl": "",
+      "name": "Juan Picco",
+      "websiteUrl": "https://github.com/jvanpiccs",
+      "privacyUrl": "https://github.com/jvanpiccs/webcom-reportes",
       "termsOfUseUrl": "",
       "mpnId": "Undefined-1.14.0"
     },
     "metadata": {
       "shortDescription": {
-        "default": "webcom-reportes-2 description"
+        "default": "webcom-reportes"
       },
       "longDescription": {
-        "default": "webcom-reportes-2 description"
+        "default": "webcom-reportes"
       },
       "screenshotPaths": [],
       "videoUrl": "",
@@ -27,8 +27,8 @@
     },
     "features": [
       {
-        "title": "webcom-reportes-2 Feature",
-        "description": "The feature that activates elements of the webcom-reportes-2 solution.",
+        "title": "webcom-reportes",
+        "description": "The feature that activates elements of the webcom-reportes solution.",
         "id": "f34071af-f691-4402-830f-f6ab4a8d334d",
         "version": "1.0.0.0"
       }

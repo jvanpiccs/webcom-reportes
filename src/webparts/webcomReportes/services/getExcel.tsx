@@ -45,19 +45,24 @@ export async function getExcel(file: IFileInfo, entidades, context) {
         }
       });
     });
-    //metodo para saltear la interceptacion de data de sharepoint
-    var wbout = XLSX.write(newReporte, { bookType: 'xlsx', type: 'binary' });
-    let blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
-    let url = URL.createObjectURL(blob);
-    // let blob;
-    let link = document.createElement('a');
-    link.href = url;
-    link.download = file.Name;
-    link.style.visibility = 'hidden';
-    link.dataset.interception = 'off';
-    link.click();
-  } catch (err) {
-    console.log(err);
+    console.log(newReporte);
+    if (newReporte.SheetNames.length == 0) {
+      throw 'Este reporte no encuentra registros para las entidades que tiene asignadas';
+    } else {
+      //metodo para saltear la interceptacion de data de sharepoint
+      var wbout = XLSX.write(newReporte, { bookType: 'xlsx', type: 'binary' });
+      let blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
+      let url = URL.createObjectURL(blob);
+      // let blob;
+      let link = document.createElement('a');
+      link.href = url;
+      link.download = file.Name;
+      link.style.visibility = 'hidden';
+      link.dataset.interception = 'off';
+      link.click();
+    }
+  } catch (error) {
+    throw error;
   }
 }
 

@@ -7,7 +7,6 @@ import '@pnp/sp/site-users/web';
 export default async function useGetuser(context) {
   const sp = spfi().using(SPFx(context));
   let listId = '2a529d15-8e90-4e08-a9ee-c4360dc6ad45';
-
   try {
     let currentUser = await sp.web.currentUser();
     if (currentUser == undefined) {
@@ -34,8 +33,7 @@ export default async function useGetuser(context) {
     }
 
     return { ...userProfile[0], Email: currentUser.Email };
-  } catch (err) {
-    console.log(err);
-    return err;
+  } catch (error) {
+    throw error;
   }
 }

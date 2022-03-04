@@ -52,6 +52,7 @@ export const Reportes: React.FunctionComponent<IReportesProps> = (
 };
 //!link de descarga
 import { getExcel } from '../services/getExcel';
+import { initialState, reducerReportes } from '../services/reducerReportes';
 export interface IReporteProps {
   file: any;
   entidades;
@@ -61,13 +62,18 @@ export interface IReporteProps {
 export const Reporte: React.FunctionComponent<IReporteProps> = (
   props: React.PropsWithChildren<IReporteProps>
 ) => {
+  const [state, dispatch] = React.useReducer(reducerReportes, initialState);
   let { file, entidades, context } = props;
   let [isDownloading, setIsDownloading] = React.useState(false);
   async function downloadReporte(file) {
-    setIsDownloading(true);
-    let downloadFile = await getExcel(file, entidades, context);
-    setIsDownloading(false);
-    return downloadFile;
+    try {
+      setIsDownloading(true);
+      let downloadFile = await getExcel(file, entidades, context);
+      setIsDownloading(false);
+      return downloadFile;
+    } catch (error) {
+      dispatch({ type: 'downloadError', payload: error });
+    }
   }
   return (
     <Stack horizontal horizontalAlign='space-between'>

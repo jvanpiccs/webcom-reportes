@@ -56,8 +56,8 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
         let user = await getUser(props.context);
         dispatch({ type: 'userSuccess', payload: user });
       } catch (err) {
-        dispatch({ type: 'userError', payload: err });
         console.log(err);
+        dispatch({ type: 'userError', payload: err });
       }
 
       try {

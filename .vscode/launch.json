@@ -3,8 +3,7 @@
   "configurations": [
     {
       "name": "Attach to Edge",
-      "port": 9222,
-      "request": "attach",
+      "request": "launch",
       "type": "pwa-msedge",
       "url": "https://claroaup.sharepoint.com/sites/webcom/_layouts/workbench.aspx",
       "webRoot": "${workspaceRoot}",

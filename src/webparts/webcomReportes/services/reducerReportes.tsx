@@ -30,7 +30,7 @@ export function reducerReportes(state, action) {
       return {
         ...state,
         isLoading: false,
-        error: action.payload.message,
+        error: action.payload,
       };
     case 'typesLoading': {
       return {
@@ -78,6 +78,12 @@ export function reducerReportes(state, action) {
         ...state,
         filesLoading: false,
         error: 'No se encontraro reportes',
+      };
+    }
+    case 'downloadError': {
+      return {
+        ...state,
+        error: action.payload,
       };
     }
 

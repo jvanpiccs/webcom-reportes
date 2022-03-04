@@ -36,5 +36,6 @@ export default async function useGetuser(context) {
     return { ...userProfile[0], Email: currentUser.Email };
   } catch (err) {
     console.log(err);
+    return err;
   }
 }

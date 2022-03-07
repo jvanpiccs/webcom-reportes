@@ -1,9 +1,7 @@
 import {
   AnimationClassNames,
   ComboBox,
-  CommandBar,
   IComboBoxOption,
-  ICommandBarItemProps,
   SearchBox,
   Stack,
 } from '@fluentui/react';

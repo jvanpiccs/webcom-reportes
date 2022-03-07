@@ -47,6 +47,13 @@ export function reducerReportes(state, action) {
         type: action.payload[0],
       };
     }
+    case 'allFilesError': {
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      };
+    }
     case 'setType': {
       return {
         ...state,
@@ -77,7 +84,7 @@ export function reducerReportes(state, action) {
       return {
         ...state,
         filesLoading: false,
-        error: 'No se encontraro reportes',
+        error: 'No se encontraron reportes',
       };
     }
     case 'downloadError': {

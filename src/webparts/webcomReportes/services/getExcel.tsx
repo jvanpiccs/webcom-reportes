@@ -7,18 +7,17 @@ import { IFileInfo } from '@pnp/sp/files';
 
 export async function getExcel(file: IFileInfo, entidades, context) {
   try {
-    //fetch del archivo
+    //! fetch del archivo
     const sp = spfi().using(SPFx(context));
     let buffer = await sp.web
       .getFileByServerRelativePath(file.ServerRelativeUrl)
       .getBuffer();
-
-    //lectura del archivo con lib https://github.com/sheetjs/sheetjs
+    //! lectura del archivo con lib https://github.com/sheetjs/sheetjs
     let wb = XLSX.read(buffer, {
       type: 'buffer',
     });
     let sheetNames = wb.SheetNames;
-    //conversion de shee a json
+    //! conversion de sheet a json
     let sheets: XLSX.WorkSheet[] = sheetNames.map((sheetName) => {
       return {
         name: sheetName,
@@ -26,34 +25,35 @@ export async function getExcel(file: IFileInfo, entidades, context) {
       };
     });
 
-    //nuevo libro y nueva tabla para visualizar
-    let newReporte = XLSX.utils.book_new();
+    //! nuevo libro y nueva tabla para visualizar
+    let newWb = XLSX.utils.book_new();
 
-    //iteracion por entidad
+    //! iteracion por entidad
     entidades.map((entidad) => {
-      //iteracion por sheet
+      //! iteracion por sheet
       sheets.map((sheet) => {
         let newSheet = sheet.sheet.filter(
           (row) => Number(row.ENTIDAD) == entidad.Entidad
         );
-        //condicion de que la tabla no tiene valores vacios
+        //! condicion de que la tabla no tiene valores vacios
         if (newSheet.length != 0) {
-          //acciones para descarga
+          //* acciones para descarga
           let xlsxSheet = XLSX.utils.json_to_sheet(newSheet);
           let sheetName = `${entidad.Entidad} ${sheet.name}`.slice(0, 30);
-          XLSX.utils.book_append_sheet(newReporte, xlsxSheet, sheetName);
+          XLSX.utils.book_append_sheet(newWb, xlsxSheet, sheetName);
         }
       });
     });
-    console.log(newReporte);
-    if (newReporte.SheetNames.length == 0) {
+
+    //! validacion de que el reporte tiene registros
+    if (!newWb.SheetNames.length) {
       throw 'Este reporte no encuentra registros para las entidades que tiene asignadas';
     } else {
-      //metodo para saltear la interceptacion de data de sharepoint
-      var wbout = XLSX.write(newReporte, { bookType: 'xlsx', type: 'binary' });
+      //! metodo para saltear la interceptacion de data de sharepoint
+      var wbout = XLSX.write(newWb, { bookType: 'xlsx', type: 'binary' });
       let blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
       let url = URL.createObjectURL(blob);
-      // let blob;
+      //! let blob;
       let link = document.createElement('a');
       link.href = url;
       link.download = file.Name;

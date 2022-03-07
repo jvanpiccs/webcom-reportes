@@ -6,6 +6,7 @@ import {
   MessageBar,
   MessageBarType,
   Persona,
+  PersonaPresence,
   PersonaSize,
   ProgressIndicator,
   Stack,
@@ -55,17 +56,17 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
       try {
         let user = await getUser(props.context);
         dispatch({ type: 'userSuccess', payload: user });
-      } catch (err) {
-        console.log(err);
-        dispatch({ type: 'userError', payload: err });
+      } catch (error) {
+        console.log(error);
+        dispatch({ type: 'userError', payload: error });
       }
 
       try {
         let types = await getTypes(props.context);
         dispatch({ type: 'typesSuccess', payload: types });
-      } catch (err) {
-        dispatch({ type: 'allFilesError' });
-        console.log(err);
+      } catch (error) {
+        console.log(error);
+        dispatch({ type: 'allFilesError', payload: error });
       }
     }
     fetchLoading();
@@ -111,7 +112,9 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
               secondaryText={`Entidades: ${user.Entidades?.map(
                 (e) => e.Entidad
               ).join(', ')}`}
-              size={PersonaSize.size40}
+              showSecondaryText
+              size={PersonaSize.size24}
+              presence={PersonaPresence.none}
               className={AnimationClassNames.fadeIn100}
             />
           )}

@@ -5,8 +5,8 @@ import '@pnp/sp/folders';
 import '@pnp/sp/lists';
 import '@pnp/sp/files';
 
-export default async function getTypes(context) {
-  const sp = spfi().using(SPFx(context));
+export default async function getTypes(state, dispatch) {
+  const sp = spfi().using(SPFx(state.context));
   const listId = '13c99e77-c804-4d36-8012-de6094bf0d5e';
 
   try {
@@ -32,8 +32,10 @@ export default async function getTypes(context) {
         });
       }
     });
-    return types;
-  } catch (err) {
-    console.log(err);
+
+    dispatch({ type: 'setTypes', payload: types });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: 'setError', payload: error });
   }
 }

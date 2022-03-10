@@ -4,9 +4,13 @@ import '@pnp/sp/lists';
 import '@pnp/sp/items';
 import '@pnp/sp/site-users/web';
 
-export default async function useGetuser(context) {
-  const sp = spfi().using(SPFx(context));
+export default async function getUser(state, dispatch) {
+  //!sp
+  const sp = spfi().using(SPFx(state.context));
   let listId = '2a529d15-8e90-4e08-a9ee-c4360dc6ad45';
+
+  //!inicio
+  dispatch({ type: 'userLoading' });
   try {
     let currentUser = await sp.web.currentUser();
     if (currentUser == undefined) {
@@ -31,9 +35,10 @@ export default async function useGetuser(context) {
         })
       );
     }
-
-    return { ...userProfile[0], Email: currentUser.Email };
+    let newUser = { ...userProfile[0], Email: currentUser.Email };
+    dispatch({ type: 'setUser', payload: newUser });
   } catch (error) {
-    throw error;
+    console.log(error);
+    dispatch({ type: 'setError', payload: error });
   }
 }

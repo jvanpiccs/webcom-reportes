@@ -15,19 +15,18 @@ import {
   DirectionalHint,
 } from '@fluentui/react';
 import { useBoolean, useId } from '@fluentui/react-hooks';
-import { IFileInfo } from '@pnp/sp/files';
 
 export interface IReportesProps {
-  files: IFileInfo[];
-  isLoading: boolean;
-  entidades;
-  context;
+  // files: IFileInfo[];
+  // isLoading: boolean;
+  // entidades;
+  // context;
 }
 
 export const Reportes: React.FunctionComponent<IReportesProps> = (
   props: React.PropsWithChildren<IReportesProps>
 ) => {
-  let { files, isLoading, entidades, context } = props;
+  let state = useContext(ReportesStateContext);
   let reportesColumns: IColumn[] = [
     {
       key: 'title',
@@ -35,18 +34,22 @@ export const Reportes: React.FunctionComponent<IReportesProps> = (
       minWidth: 100,
       fieldName: 'Name',
       onRender: (file) => (
-        <Reporte file={file} entidades={entidades} context={context} />
+        <Reporte
+          file={file}
+          entidades={state.user?.Entidades}
+          context={state.context}
+        />
       ),
     },
   ];
   return (
     <>
       <ShimmeredDetailsList
-        items={files}
+        items={state.files}
         columns={reportesColumns}
         selectionMode={SelectionMode.none}
         compact
-        enableShimmer={isLoading}
+        enableShimmer={state.isLoading}
         isHeaderVisible={false}
         layoutMode={DetailsListLayoutMode.justified}
         shimmerLines={6}
@@ -56,6 +59,11 @@ export const Reportes: React.FunctionComponent<IReportesProps> = (
 };
 //!link de descarga
 import { getExcel } from '../services/getExcel';
+import { useContext } from 'react';
+import {
+  ReportesDispatchContext,
+  ReportesStateContext,
+} from '../context/ReportesContext';
 export interface IReporteProps {
   file: any;
   entidades;

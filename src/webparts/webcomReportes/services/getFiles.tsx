@@ -5,16 +5,27 @@ import '@pnp/sp/folders';
 import '@pnp/sp/lists';
 import '@pnp/sp/files';
 
-export default async function getTypes(context, type, query) {
-  const sp = spfi().using(SPFx(context));
+export default async function getFiles(state, dispatch) {
+  const sp = spfi().using(SPFx(state.context));
+
+  dispatch({ type: 'filesLoading' });
   try {
-    let files = await sp.web.getFolderByServerRelativePath(type.data).files();
-    if (query != '') {
-      return files.filter((f) => f.Name.toLowerCase().includes(query));
-    } else {
-      return files;
+    let newFiles = [];
+    if (state.type != undefined) {
+      let files = await sp.web
+        .getFolderByServerRelativePath(state.type?.data)
+        .files();
+      if (files && state.query != '') {
+        newFiles = files.filter((f) =>
+          f.Name.toLowerCase().includes(state.query)
+        );
+      } else {
+        newFiles = files;
+      }
     }
-  } catch (err) {
-    console.log(err);
+    dispatch({ type: 'setFiles', payload: newFiles });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: 'setError', payload: error });
   }
 }

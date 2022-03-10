@@ -1,12 +1,12 @@
 export const reportesInitialState = {
   isLoading: false,
+  isLoadingFiles: false,
   loadingMsg: '',
   user: undefined,
   type: undefined,
   types: [],
   allFiles: [],
   files: [],
-  filesLoading: false,
   query: '',
   error: '',
   context: undefined,
@@ -80,7 +80,7 @@ export function reducerReportes(state, action) {
         query: action.payload,
       };
     }
-    case 'filesLoading': {
+    case 'loadingFiles': {
       return {
         ...state,
         filesLoading: true,

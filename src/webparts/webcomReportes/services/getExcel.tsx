@@ -5,10 +5,11 @@ import '@pnp/sp/folders';
 import * as XLSX from 'xlsx';
 import { IFileInfo } from '@pnp/sp/files';
 
-export async function getExcel(file: IFileInfo, entidades, context) {
+export async function getExcel(file: IFileInfo, state) {
+  const sp = spfi().using(SPFx(state.context));
+
   try {
     //! fetch del archivo
-    const sp = spfi().using(SPFx(context));
     let buffer = await sp.web
       .getFileByServerRelativePath(file.ServerRelativeUrl)
       .getBuffer();
@@ -29,7 +30,7 @@ export async function getExcel(file: IFileInfo, entidades, context) {
     let newWb = XLSX.utils.book_new();
 
     //! iteracion por entidad
-    entidades.map((entidad) => {
+    state.user.Entidades.map((entidad) => {
       //! iteracion por sheet
       sheets.map((sheet) => {
         let newSheet = sheet.sheet.filter(

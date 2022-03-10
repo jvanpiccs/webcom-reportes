@@ -8,14 +8,15 @@ import '@pnp/sp/files';
 export default async function getFiles(state, dispatch) {
   const sp = spfi().using(SPFx(state.context));
 
-  dispatch({ type: 'filesLoading' });
   try {
     let newFiles = [];
     if (state.type != undefined) {
       let files = await sp.web
         .getFolderByServerRelativePath(state.type?.data)
         .files();
+
       if (files && state.query != '') {
+        await dispatch({ type: 'loadingFiles' });
         newFiles = files.filter((f) =>
           f.Name.toLowerCase().includes(state.query)
         );
@@ -23,6 +24,7 @@ export default async function getFiles(state, dispatch) {
         newFiles = files;
       }
     }
+    // dispatch({ type: 'setFiles', payload: [] });
     dispatch({ type: 'setFiles', payload: newFiles });
   } catch (error) {
     console.log(error);

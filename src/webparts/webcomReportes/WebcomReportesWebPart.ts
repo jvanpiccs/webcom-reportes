@@ -21,40 +21,21 @@ export interface IWebcomReportesWebPartProps {
 
 export default class WebcomReportesWebPart extends BaseClientSideWebPart<IWebcomReportesWebPartProps> {
   private _isDarkTheme: boolean = false;
-  private _environmentMessage: string = '';
 
   protected async onInit(): Promise<void> {
     await super.onInit();
     const sp = spfi().using(SPFx(this.context));
-    this._environmentMessage = this._getEnvironmentMessage();
     return super.onInit();
   }
 
   public render(): void {
     const element: React.ReactElement<IWebcomReportesProps> =
       React.createElement(WebcomReportes, {
-        description: this.properties.description,
         isDarkTheme: this._isDarkTheme,
-        environmentMessage: this._environmentMessage,
-        hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName,
         context: this.context,
       });
 
     ReactDom.render(element, this.domElement);
-  }
-
-  private _getEnvironmentMessage(): string {
-    if (!!this.context.sdks.microsoftTeams) {
-      // running in Teams
-      return this.context.isServedFromLocalhost
-        ? strings.AppLocalEnvironmentTeams
-        : strings.AppTeamsTabEnvironment;
-    }
-
-    return this.context.isServedFromLocalhost
-      ? strings.AppLocalEnvironmentSharePoint
-      : strings.AppSharePointEnvironment;
   }
 
   protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {

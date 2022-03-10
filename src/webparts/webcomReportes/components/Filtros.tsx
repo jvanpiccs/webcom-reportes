@@ -5,7 +5,7 @@ import {
   Stack,
 } from '@fluentui/react';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import {
   ReportesDispatchContext,
   ReportesStateContext,
@@ -44,7 +44,7 @@ export const Filtros: React.FunctionComponent<IFiltrosProps> = (
           verticalAlign='center'
         >
           <ComboBox
-            placeholder='Elección de reporte'
+            placeholder='Seleccionar Reporte'
             options={state.types}
             onChange={(ev, option) => _onChangeCombo(option)}
             autoComplete='on'

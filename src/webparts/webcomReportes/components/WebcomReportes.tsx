@@ -23,11 +23,7 @@ import { LoadingBar } from './LoadingBar';
 import { User } from './User';
 
 export interface IWebcomReportesProps {
-  description: string;
   isDarkTheme: boolean;
-  environmentMessage: string;
-  hasTeamsContext: boolean;
-  userDisplayName: string;
   context: any;
 }
 
@@ -35,7 +31,6 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
   props: React.PropsWithChildren<IWebcomReportesProps>
 ) => {
   const [state, dispatch] = useReducer(reducerReportes, reportesInitialState);
-  console.log(state);
   useEffect(() => {
     dispatch({ type: 'setContext', payload: props.context });
   }, []);
@@ -81,10 +76,12 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
               </Text>
               <User />
             </Stack>
+
             <Stack>
               <LoadingBar />
               <ErrorMessage />
               <Filtros />
+              <br />
               <Reportes />
             </Stack>
           </Stack>

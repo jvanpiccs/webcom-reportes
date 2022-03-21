@@ -3,6 +3,7 @@ import '@pnp/sp/webs';
 import '@pnp/sp/lists';
 import '@pnp/sp/items';
 import '@pnp/sp/site-users/web';
+import { HttpRequestError } from '@pnp/queryable';
 
 export default async function getUser(state, dispatch) {
   //!sp
@@ -14,9 +15,8 @@ export default async function getUser(state, dispatch) {
   try {
     let currentUser = await sp.web.currentUser();
     if (currentUser == undefined) {
-      throw 'No se encontro el usuario logueado.';
+      throw new Error('No se encontro el usuario logueado.');
     }
-
     let userProfile = await sp.web.lists
       .getById(listId)
       .items.filter(`UsuarioId eq ${currentUser.Id}`)();
@@ -39,6 +39,16 @@ export default async function getUser(state, dispatch) {
     dispatch({ type: 'setUser', payload: newUser });
   } catch (error) {
     console.log(error);
-    dispatch({ type: 'setError', payload: error });
+    if (error?.isHttpRequestError) {
+      dispatch({
+        type: 'setError',
+        payload: 'No tiene permisos para leer el listado de usuarios.',
+      });
+    } else {
+      dispatch({
+        type: 'setError',
+        payload: error,
+      });
+    }
   }
 }

@@ -38,8 +38,8 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
   //!usuario y categorias
   useEffect(() => {
     async function fetchData() {
-      await getUser(state, dispatch);
-      await getTypes(state, dispatch);
+      getUser(state, dispatch);
+      getTypes(state, dispatch);
     }
     if (state.context != undefined) {
       fetchData();

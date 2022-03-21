@@ -14,13 +14,15 @@ export default async function getTypes(state, dispatch) {
       .getById(listId)
       .rootFolder.folders.orderBy('Name')
       .filter(`Name ne 'ADMIN' and Name ne 'Forms' and Name ne 'Test'`)();
+
     let types = [];
+
     allFolders.map(async (folder) => {
       let newFiles = await sp.web
         .getFolderByServerRelativePath(folder.ServerRelativeUrl)
         .files();
+
       if (newFiles.length != 0) {
-        console.log();
         let url = newFiles[0].ServerRelativeUrl.split('/')
           .slice(0, -1)
           .join('/');
@@ -30,12 +32,22 @@ export default async function getTypes(state, dispatch) {
           text: name,
           data: url,
         });
+      } else {
+        throw 'No se encontraron reportes.';
       }
     });
-
     dispatch({ type: 'setTypes', payload: types });
   } catch (error) {
-    console.log(error);
-    dispatch({ type: 'setError', payload: error });
+    if (error?.isHttpRequestError) {
+      dispatch({
+        type: 'setError',
+        payload: 'No tiene permisos para leer el listado de reportes.',
+      });
+    } else {
+      dispatch({
+        type: 'setError',
+        payload: error,
+      });
+    }
   }
 }

@@ -36,28 +36,31 @@ export const Filtros: React.FunctionComponent<IFiltrosProps> = (
 
   return (
     <>
-      {!state.isLoading && state.user != undefined && state.allFiles != [] && (
-        <Stack
-          horizontal
-          tokens={{ childrenGap: 10 }}
-          wrap
-          verticalAlign='center'
-        >
-          <ComboBox
-            placeholder='Seleccionar Reporte'
-            options={state.types}
-            onChange={(ev, option) => _onChangeCombo(option)}
-            autoComplete='on'
-            allowFreeform={true}
-            className={AnimationClassNames.fadeIn100}
-          />
-          <SearchBox
-            className={AnimationClassNames.fadeIn100}
-            placeholder='Filtrar resultados'
-            onChange={(ev, newValue) => _onChangeSearch(newValue)}
-          />
-        </Stack>
-      )}
+      {state.error == '' &&
+        !state.isLoading &&
+        state.user != undefined &&
+        state.allFiles != [] && (
+          <Stack
+            horizontal
+            tokens={{ childrenGap: 10 }}
+            wrap
+            verticalAlign='center'
+          >
+            <ComboBox
+              placeholder='Seleccionar Reporte'
+              options={state.types}
+              onChange={(ev, option) => _onChangeCombo(option)}
+              autoComplete='on'
+              allowFreeform={true}
+              className={AnimationClassNames.fadeIn100}
+            />
+            <SearchBox
+              className={AnimationClassNames.fadeIn100}
+              placeholder='Filtrar resultados'
+              onChange={(ev, newValue) => _onChangeSearch(newValue)}
+            />
+          </Stack>
+        )}
     </>
   );
 };

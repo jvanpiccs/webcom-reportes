@@ -21,6 +21,7 @@ import {
 import { ErrorMessage } from './ErrorMessage';
 import { LoadingBar } from './LoadingBar';
 import { User } from './User';
+import { getData } from '../services/getData';
 
 export interface IWebcomReportesProps {
   isDarkTheme: boolean;
@@ -35,26 +36,16 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
     dispatch({ type: 'setContext', payload: props.context });
   }, []);
 
-  //!usuario y categorias
+  //! data
   useEffect(() => {
     async function fetchData() {
-      getUser(state, dispatch);
-      getTypes(state, dispatch);
+      console.log('prevFlow');
+      getData(state.context);
     }
     if (state.context != undefined) {
       fetchData();
     }
   }, [state.context]);
-
-  //! busqueda y filtrado
-  useEffect(() => {
-    async function fetchData() {
-      if (state.user != undefined || state.types.length == 0) {
-        await getFiles(state, dispatch);
-      }
-    }
-    fetchData();
-  }, [state.type, state.query]);
 
   return (
     <>
@@ -74,15 +65,15 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
               <Text variant='large' className={AnimationClassNames.fadeIn200}>
                 Reportes
               </Text>
-              <User />
+              {/* <User /> */}
             </Stack>
 
             <Stack>
-              <LoadingBar />
-              <ErrorMessage />
-              <Filtros />
+              {/* <LoadingBar /> */}
+              {/* <ErrorMessage /> */}
+              {/* <Filtros /> */}
               <br />
-              <Reportes />
+              {/* <Reportes /> */}
             </Stack>
           </Stack>
         </ReportesStateContext.Provider>

@@ -39,7 +39,7 @@ export const Filtros: React.FunctionComponent<IFiltrosProps> = (
       {state.error == '' &&
         !state.isLoading &&
         state.user != undefined &&
-        state.allFiles != [] && (
+        state.files != [] && (
           <Stack
             horizontal
             tokens={{ childrenGap: 10 }}

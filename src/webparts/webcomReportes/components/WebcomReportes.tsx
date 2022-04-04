@@ -5,10 +5,6 @@ import { Depths, Stack, Text } from '@fluentui/react';
 //components
 import { Reportes } from './Reportes';
 import { Filtros } from './Filtros';
-//funciones
-import getUser from '../services/getUser';
-import getTypes from '../services/getTypes';
-import getFiles from '../services/getFiles';
 //context
 import {
   reducerReportes,
@@ -21,7 +17,6 @@ import {
 import { ErrorMessage } from './ErrorMessage';
 import { LoadingBar } from './LoadingBar';
 import { User } from './User';
-import { getData } from '../services/getData';
 
 export interface IWebcomReportesProps {
   isDarkTheme: boolean;
@@ -32,20 +27,17 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
   props: React.PropsWithChildren<IWebcomReportesProps>
 ) => {
   const [state, dispatch] = useReducer(reducerReportes, reportesInitialState);
-  useEffect(() => {
-    dispatch({ type: 'setContext', payload: props.context });
-  }, []);
-
-  //! data
+  //!context
   useEffect(() => {
     async function fetchData() {
-      console.log('prevFlow');
-      getData(state.context);
+      try {
+        dispatch({ type: 'setContext', payload: props.context });
+      } catch (error) {
+        console.log(error);
+      }
     }
-    if (state.context != undefined) {
-      fetchData();
-    }
-  }, [state.context]);
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -63,14 +55,14 @@ export const WebcomReportes: React.FunctionComponent<IWebcomReportesProps> = (
               verticalAlign='center'
             >
               <Text variant='large' className={AnimationClassNames.fadeIn200}>
-                Reportes
+                Reportes de Liquidación
               </Text>
-              {/* <User /> */}
+              <User />
             </Stack>
 
             <Stack>
-              {/* <LoadingBar /> */}
-              {/* <ErrorMessage /> */}
+              <LoadingBar />
+              <ErrorMessage />
               {/* <Filtros /> */}
               <br />
               {/* <Reportes /> */}

@@ -5,14 +5,21 @@ export const reportesInitialState = {
   user: undefined,
   type: undefined,
   types: [],
-  allFiles: [],
   files: [],
+  tree: null,
   query: '',
   error: '',
   context: undefined,
+  token: undefined,
 };
 export function reducerReportes(state, action) {
   switch (action.type) {
+    case 'setToken': {
+      return {
+        ...state,
+        token: action.payload,
+      };
+    }
     case 'setError': {
       return {
         ...state,
@@ -46,12 +53,26 @@ export function reducerReportes(state, action) {
         user: action.payload,
       };
     }
+    case 'setFiles': {
+      return {
+        ...state,
+        isLoading: false,
+        files: action.payload,
+      };
+    }
     case 'userError':
       return {
         ...state,
         isLoading: false,
         error: action.payload,
       };
+    case 'filesError': {
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      };
+    }
     case 'typesLoading': {
       return {
         ...state,
@@ -84,13 +105,6 @@ export function reducerReportes(state, action) {
       return {
         ...state,
         filesLoading: true,
-      };
-    }
-    case 'setFiles': {
-      return {
-        ...state,
-        files: action.payload,
-        filesLoading: false,
       };
     }
     case 'downloadError': {
